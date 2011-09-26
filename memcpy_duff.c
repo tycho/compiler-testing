@@ -7,6 +7,46 @@
 #include <time.h>
 #endif
 
+#define DUFFS_DEVICE_4(x,size) \
+  { \
+  if(size > 0) \
+  { \
+    int __DUFFS_DEVICE_count, __DUFFS_DEVICE_n; \
+    __DUFFS_DEVICE_count = size; \
+    __DUFFS_DEVICE_n = (__DUFFS_DEVICE_count+3) >> 2; \
+    switch (__DUFFS_DEVICE_count & 3) \
+    { \
+    case 0: do { x; \
+    case 3: x; \
+    case 2: x; \
+    case 1: x; \
+      } while (--__DUFFS_DEVICE_n > 0); \
+    } \
+  } \
+  }
+
+#define DUFFS_DEVICE_8(x,size) \
+  { \
+  if(size > 0) \
+  { \
+    int __DUFFS_DEVICE_count, __DUFFS_DEVICE_n; \
+    __DUFFS_DEVICE_count = size; \
+    __DUFFS_DEVICE_n = (__DUFFS_DEVICE_count+7) >> 3; \
+    switch (__DUFFS_DEVICE_count & 7) \
+    { \
+    case 0: do { x; \
+    case 7: x; \
+    case 6: x; \
+    case 5: x; \
+    case 4: x; \
+    case 3: x; \
+    case 2: x; \
+    case 1: x; \
+      } while (--__DUFFS_DEVICE_n > 0); \
+    } \
+  } \
+  }
+
 typedef uint32_t v4 __attribute__ ((vector_size(16), aligned(1)));
 
 void *memcpy_vector(void *__restrict dst, const void *__restrict src, size_t size)
@@ -19,33 +59,17 @@ void *memcpy_vector(void *__restrict dst, const void *__restrict src, size_t siz
 	const char *csrc;
 	char *cdst;
 
-	size_t i, lim;
+	size_t lim;
 
 	lim = size >> 4;
 	vdst = (v4 *)dst;
 	vsrc = (const v4 *)src;
-	i = (lim + 3) / 4;
-	switch (lim % 4) {
-	do {
-		case 0: *vdst++ = *vsrc++;
-		case 3: *vdst++ = *vsrc++;
-		case 2: *vdst++ = *vsrc++;
-		case 1: *vdst++ = *vsrc++;
-	} while (--i > 0);
-	}
+	DUFFS_DEVICE_4(*vdst++ = *vsrc++, lim);
 
 	lim = size & 15;
 	csrc = (const char *)vsrc;
 	cdst = (char *)vdst;
-	i = (lim + 3) / 4;
-	switch (lim % 4) {
-	do {
-		case 0: *cdst++ = *csrc++;
-		case 3: *cdst++ = *csrc++;
-		case 2: *cdst++ = *csrc++;
-		case 1: *cdst++ = *csrc++;
-	} while (--i > 0);
-	}
+	DUFFS_DEVICE_4(*cdst++ = *csrc++, lim);
 	return orig;
 }
 
