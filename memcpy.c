@@ -9,24 +9,36 @@ void *memcpy_vector(void *__restrict dst, const void *__restrict src, size_t siz
 {
 	void *orig = dst;
 
+	v4 *vdst;
+	const v4 *vsrc;
+
 	const char *csrc;
 	char *cdst;
 
 	size_t i, lim;
 
 	lim = size >> 4;
-	v4 *vdst = (v4 *)dst;
-	const v4 *vsrc = (const v4 *)src;
-	for (i = 0; i < lim; i++) {
-		*vdst++ = *vsrc++;
+	vdst = (v4 *)dst;
+	vsrc = (const v4 *)src;
+	i = lim / 4;
+	while (i-- > 0) {
+		vdst[0] = vsrc[0];
+		vdst[1] = vsrc[1];
+		vdst[2] = vsrc[2];
+		vdst[3] = vsrc[3];
+		vdst += 4;
+		vsrc += 4;
 	}
+	i = lim % 4;
+	while (i-- > 0)
+		*vdst++ = *vsrc++;
 
 	lim = size & 15;
 	csrc = (const char *)vsrc;
 	cdst = (char *)vdst;
-	for (i = 0; i < lim; i++) {
+	i = lim;
+	while (i-- > 0)
 		*cdst++ = *csrc++;
-	}
 	return orig;
 }
 
