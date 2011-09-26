@@ -50,10 +50,10 @@ void *memcpy_vector(void *__restrict dst, const void *__restrict src, size_t siz
 }
 
 #ifdef TEST
-static long elapsedTime(struct timeval* start, struct timeval* end)
+static long elapsedTime(struct timespec* start, struct timespec* end)
 {
-	return ((long) end->tv_sec * 1000000 + end->tv_usec) -
-	       ((long) start->tv_sec * 1000000 + start->tv_usec);
+	return ((long) end->tv_sec * 1000000 + end->tv_nsec / 1000) -
+	       ((long) start->tv_sec * 1000000 + start->tv_nsec / 1000);
 }
 
 int main(int argc, char **argv)
@@ -63,7 +63,7 @@ int main(int argc, char **argv)
 	char *mem, *mem1;
 
 	size_t lim = 25;
-	struct timeval start, finish;
+	struct timespec start, finish;
 	long best;
 
 	mem = (char *)valloc(mem_size);
@@ -73,16 +73,15 @@ int main(int argc, char **argv)
 	memcpy(mem1, mem, mem_size);
 	memcpy(mem, mem1, mem_size);
 
-	/* Test each */
-	gettimeofday(&start, NULL);
+	clock_gettime(CLOCK_MONOTONIC, &start);
 	memcpy_vector(mem1, mem, mem_size);
-	gettimeofday(&finish, NULL);
+	clock_gettime(CLOCK_MONOTONIC, &finish);
 	best = elapsedTime(&start, &finish);
 	for (i = 0; i < lim; i++) {
 		long t;
-		gettimeofday(&start, NULL);
+		clock_gettime(CLOCK_MONOTONIC, &start);
 		memcpy_vector(mem1, mem, mem_size);
-		gettimeofday(&finish, NULL);
+		clock_gettime(CLOCK_MONOTONIC, &finish);
 		t = elapsedTime(&start, &finish);
 		if (t < best) best = t;
 		printf("run %5lu: %10.2f MB/s\n",
