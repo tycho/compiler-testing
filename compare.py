@@ -50,7 +50,10 @@ def main():
 		dump_asm = [ a['prefix'] + 'objdump' ] + dump_flags + [ '-d', obj ]
 		cmds = [ cc, dump_asm, dump_mix ]
 		exec_cmd_chain(cmds)
-		os.remove(obj)
+		try:
+			os.remove(obj)
+		except:
+			pass
 		print "=" * 80
 
 
