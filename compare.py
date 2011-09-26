@@ -8,6 +8,7 @@
 # ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
 # OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 #
+import os
 import subprocess
 import sys
 
@@ -17,9 +18,9 @@ common = {
 
 archs = [
 		{ 'prefix' : '', 'cflags' : [ '-m64', '-march=core2' ], 'objdump-flags' : [ '-M', 'intel-mnemonic' ] },
-		{ 'prefix' : '', 'cflags' : [ '-m32', '-march=core2' ], 'objdump-flags' : [ '-M', 'intel-mnemonic' ] },
+		{ 'prefix' : '', 'cflags' : [ '-m32', '-march=pentium-m' ], 'objdump-flags' : [ '-M', 'intel-mnemonic' ] },
 		{ 'prefix' : 'arm-linux-gnueabi-', 'cflags' : [ '-mthumb', '-mcpu=cortex-a9', '-mfpu=neon' ] },
-		{ 'prefix' : 'arm-unknown-linux-gnueabi-', 'cflags' : [ '-mthumb', '-mcpu=cortex-a9', '-mfpu=neon' ] },
+		{ 'prefix' : 'arm-unknown-linux-gnueabi-', 'cflags' : [ '-mthumb', '-mcpu=cortex-a9', '-mfloat-abi=softfp', '-mfpu=neon-fp16' ] },
 		{ 'prefix' : 'powerpc-unknown-linux-gnu-', 'cflags' : [ '-mcpu=G5', '-maltivec' ] },
 		{ 'prefix' : 'mipsel-unknown-linux-gnu-', 'cflags' : [ '-march=mips64r2', '-mfp64', '-mips3d' ] },
 		{ 'prefix' : 'sparc-unknown-linux-gnu-', 'cflags' : [ '-mcpu=v9', '-mvis' ] },
@@ -27,7 +28,7 @@ archs = [
 
 def exec_cmd_chain(l):
 	for cmd in l:
-		print cmd
+		print ' '.join(cmd)
 		try:
 			p = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
 			stdout, stderr = p.communicate()
@@ -39,15 +40,17 @@ def exec_cmd_chain(l):
 def main():
 	target = sys.argv[1]
 	for a in archs:
+		obj = target + '.o'
 		# Another option for dump_mix is to just add '-Wa,-a,-an,-ad' to these cflags.
-		cc = [ a['prefix'] + 'gcc' ] + common['cflags'] + a['cflags'] + [ '-c', '-o', target + '.o', target]
+		cc = [ a['prefix'] + 'gcc' ] + common['cflags'] + a['cflags'] + [ '-c', '-o', obj, target]
 		dump_flags = []
 		if 'objdump-flags' in a:
 			dump_flags = a['objdump-flags']
-		dump_mix = [ a['prefix'] + 'objdump' ] + dump_flags + [ '-S', target + '.o' ]
-		dump_asm = [ a['prefix'] + 'objdump' ] + dump_flags + [ '-d', target + '.o' ]
+		dump_mix = [ a['prefix'] + 'objdump' ] + dump_flags + [ '-S', obj ]
+		dump_asm = [ a['prefix'] + 'objdump' ] + dump_flags + [ '-d', obj ]
 		cmds = [ cc, dump_asm, dump_mix ]
 		exec_cmd_chain(cmds)
+		os.remove(obj)
 		print "=" * 80
 
 
