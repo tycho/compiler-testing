@@ -125,25 +125,46 @@ def main():
 	for a in archs:
 		print "\n%s" % ("=" * 80)
 		print a['desc']
-		obj = target + '.o'
+		objs = []
+		cmds = []
+
+		objbase = target + '-' + a['prefix']
+
+		hostflags = []
+		if a['prefix']:
+			hostflags += [ '-ccc-host-triple', a['prefix'][:-1] ]
+
+		obj = objbase + 'clang'
+		clang_cc = [ 'clang' ] + hostflags + common['cflags'] + a['cflags'] + [ '-S', '-o', obj + '.s', target ]
+		clang_as = [ a['prefix'] + 'as', '-o', obj + '.o', obj + '.s' ]
+		cmds.append(clang_cc)
+		cmds.append(clang_as)
+		cmds.append(['rm', obj + '.s'])
+		objs.append(obj + '.o')
+
 		# Another option for dump_mix is to just add '-Wa,-a,-an,-ad' to these cflags.
-		cc = [ a['prefix'] + 'gcc' ] + common['cflags'] + a['cflags'] + [ '-c', '-o', obj, target]
-		dump_flags = []
-		if 'objdump-flags' in a:
-			dump_flags = a['objdump-flags']
-		dump_mix = [ a['prefix'] + 'objdump' ] + dump_flags + [ '-S', obj ]
-		dump_asm = [ a['prefix'] + 'objdump' ] + dump_flags + [ '-d', obj ]
-		cmds = [ cc, dump_asm, dump_mix ]
+		obj = objbase + 'gcc'
+		cc = [ a['prefix'] + 'gcc' ] + common['cflags'] + a['cflags'] + [ '-c', '-o', obj + '.o', target]
+		cmds.append(cc)
+		objs.append(obj + '.o')
+
+		for obj in objs:
+			dump_flags = []
+			if 'objdump-flags' in a:
+				dump_flags = a['objdump-flags']
+			dump_asm = [ a['prefix'] + 'objdump' ] + dump_flags + [ '-d', obj ]
+			dump_mix = [ a['prefix'] + 'objdump' ] + dump_flags + [ '-S', obj ]
+			remove_obj = [ 'rm', obj ]
+			cmds.append(dump_asm)
+			cmds.append(dump_mix)
+			cmds.append(remove_obj)
+
+
 		print "\nCommand list:"
 		for cmd in cmds:
 			print '  %s' % (' '.join(cmd))
 		print "=" * 80
 		exec_cmd_chain(cmds)
-		try:
-			os.remove(obj)
-		except:
-			pass
-
 
 if __name__ == "__main__":
 	main()
