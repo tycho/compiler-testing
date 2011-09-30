@@ -1,3 +1,4 @@
+#include <assert.h>
 #include <stdio.h>
 #include <stdint.h>
 #include <stdlib.h>
@@ -61,14 +62,29 @@ int main(int argc, char **argv)
 
 	size_t lim = 25;
 	struct timespec start, finish;
-	long best;
+	long best, *lp;
 
-	mem = (char *)valloc(mem_size);
-	mem1 = (char *)valloc(mem_size);
+	mem = (char *)malloc(mem_size);
+	mem1 = (char *)malloc(mem_size);
 
-	/* Warm-up. */
-	memcpy(mem1, mem, mem_size);
-	memcpy(mem, mem1, mem_size);
+	for (i = 0; i < lim; i++) {
+		srandom(time(NULL));
+
+		lp = (long *)mem;
+		for (i = 0; i < (mem_size / sizeof(long)); i++)
+#ifdef TEST_RANDOM
+			*lp = random();
+#else
+			/* Floating-point NaN value from log(-1.0f) */
+			*lp = 0x7fc00000;
+#endif
+
+		/* Warm-up. */
+		memcpy_vector(mem1 + 1, mem, mem_size - 1);
+		assert(memcmp(mem1 + 1, mem, mem_size - 1) == 0);
+		memcpy_vector(mem, mem1, mem_size);
+		assert(memcmp(mem, mem1, mem_size) == 0);
+	}
 
 	clock_gettime(CLOCK_MONOTONIC, &start);
 	memcpy_vector(mem1, mem, mem_size);
