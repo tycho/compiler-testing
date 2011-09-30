@@ -111,13 +111,13 @@ archs = [
 
 def exec_cmd_chain(l):
 	for cmd in l:
-		print ' '.join(cmd)
 		try:
+			print ' '.join(cmd)
 			p = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
 			stdout, stderr = p.communicate()
 			print stdout
 		except:
-			print "Couldn't create subprocess for some reason."
+			pass
 
 
 def main():
@@ -159,11 +159,13 @@ def main():
 			cmds.append(dump_mix)
 			cmds.append(remove_obj)
 
-
-		print "\nCommand list:"
-		for cmd in cmds:
-			print '  %s' % (' '.join(cmd))
-		print "=" * 80
+		try:
+			print "\nCommand list:"
+			for cmd in cmds:
+				print '  %s' % (' '.join(cmd))
+			print "=" * 80
+		except:
+			pass
 		exec_cmd_chain(cmds)
 
 if __name__ == "__main__":
