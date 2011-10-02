@@ -13,7 +13,7 @@ import subprocess
 import sys
 
 common = {
-	'cflags' : [ '-O3', '-ggdb', '-ffast-math', '-fomit-frame-pointer', '-fno-strict-aliasing', '-Wall', '-pedantic' ]
+	'cflags' : [ '-O3', '-ggdb', '-ftree-vectorize', '-ftree-vectorizer-verbose=3', '-ffast-math', '-fomit-frame-pointer', '-fno-strict-aliasing', '-Wall', '-pedantic' ]
 	}
 
 archs = [
