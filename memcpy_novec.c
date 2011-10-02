@@ -18,13 +18,13 @@ void *memcpy_vector(void *__restrict dst, const void *__restrict src, size_t siz
 	const char *csrc;
 	char *cdst;
 
-	size_t i, lim;
+	size_t i, j, lim;
 
 	lim = size >> 3;
 	vdst = (uint64_t *)dst;
 	vsrc = (const uint64_t *)src;
 	i = lim / 8;
-	while (i-- > 0) {
+	for (j = 0; j < i; j++) {
 		vdst[0] = vsrc[0];
 		vdst[1] = vsrc[1];
 		vdst[2] = vsrc[2];
@@ -37,14 +37,14 @@ void *memcpy_vector(void *__restrict dst, const void *__restrict src, size_t siz
 		vsrc += 8;
 	}
 	i = lim % 8;
-	while (i-- > 0)
+	for (j = 0; j < i; j++)
 		*vdst++ = *vsrc++;
 
 	lim = size & 7;
 	csrc = (const char *)vsrc;
 	cdst = (char *)vdst;
 	i = lim;
-	while (i-- > 0)
+	for (j = 0; j < i; j++)
 		*cdst++ = *csrc++;
 	return orig;
 }
