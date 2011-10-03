@@ -73,7 +73,7 @@ void *memcpy_vector(void *__restrict dst, const void *__restrict src, size_t siz
 	lim = size & 15;
 	csrc = (const char *)vsrc;
 	cdst = (char *)vdst;
-	DUFFS_DEVICE_4(*cdst++ = *csrc++, lim);
+	DUFFS_DEVICE_8(*cdst++ = *csrc++, lim);
 
 	return dst;
 }
