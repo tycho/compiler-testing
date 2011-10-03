@@ -17,8 +17,6 @@ typedef uint32_t v4 __attribute__ ((vector_size(16), aligned(1)));
 
 void *memcpy_vector(void *__restrict dst, const void *__restrict src, size_t size)
 {
-	void *orig = dst;
-
 	v4 *vdst;
 	const v4 *vsrc;
 
@@ -48,7 +46,8 @@ void *memcpy_vector(void *__restrict dst, const void *__restrict src, size_t siz
 	cdst = (char *)vdst;
 	for (i = 0; i < lim; i++)
 		*cdst++ = *csrc++;
-	return orig;
+
+	return dst;
 }
 
 #ifdef TEST

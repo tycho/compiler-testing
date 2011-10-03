@@ -57,8 +57,6 @@ typedef uint32_t v4 __attribute__ ((vector_size(16), aligned(1)));
 
 void *memcpy_vector(void *__restrict dst, const void *__restrict src, size_t size)
 {
-	void *orig = dst;
-
 	v4 *vdst;
 	const v4 *vsrc;
 
@@ -76,7 +74,8 @@ void *memcpy_vector(void *__restrict dst, const void *__restrict src, size_t siz
 	csrc = (const char *)vsrc;
 	cdst = (char *)vdst;
 	DUFFS_DEVICE_4(*cdst++ = *csrc++, lim);
-	return orig;
+
+	return dst;
 }
 
 #ifdef TEST

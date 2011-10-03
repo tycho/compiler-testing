@@ -10,7 +10,6 @@
 
 void *memcpy_vector(void *__restrict dst, const void *__restrict src, size_t size)
 {
-	void *orig = dst;
 
 	uint64_t *vdst;
 	const uint64_t *vsrc;
@@ -33,7 +32,8 @@ void *memcpy_vector(void *__restrict dst, const void *__restrict src, size_t siz
 #pragma ivdep
 	for (i = 0; i < lim; i++)
 		*cdst++ = *csrc++;
-	return orig;
+
+	return dst;
 }
 
 #ifdef TEST

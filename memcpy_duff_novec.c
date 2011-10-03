@@ -32,8 +32,6 @@
 
 void *memcpy_vector(void *__restrict dst, const void *__restrict src, size_t size)
 {
-	void *orig = dst;
-
 	uint64_t *vdst;
 	const uint64_t *vsrc;
 
@@ -51,7 +49,8 @@ void *memcpy_vector(void *__restrict dst, const void *__restrict src, size_t siz
 	csrc = (const char *)vsrc;
 	cdst = (char *)vdst;
 	DUFFS_DEVICE_8(*cdst++ = *csrc++, lim);
-	return orig;
+
+	return dst;
 }
 
 #ifdef TEST
