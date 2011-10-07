@@ -58,11 +58,11 @@ archs = [
 
 		# PowerPC
 		{ 'desc' : 'PowerPC 64-bit with AltiVec',
-		  'prefix' : 'powerpc-unknown-linux-gnu-',
+		  'prefix' : 'powerpc64-unknown-linux-gnu-',
 		  'cflags' : [ '-mcpu=powerpc64', '-maltivec' ] },
 
 		{ 'desc' : 'PowerPC 64-bit without AltiVec',
-		  'prefix' : 'powerpc-unknown-linux-gnu-',
+		  'prefix' : 'powerpc64-unknown-linux-gnu-',
 		  'cflags' : [ '-mcpu=powerpc64', '-mno-altivec' ] },
 
 		{ 'desc' : 'PowerPC 32-bit',
