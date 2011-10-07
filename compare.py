@@ -134,6 +134,11 @@ def main():
 		if a['prefix']:
 			hostflags += [ '-ccc-host-triple', a['prefix'][:-1] ]
 
+
+		cmds.append([ a['prefix'] + 'gcc', '-v' ])
+		cmds.append([ a['prefix'] + 'objdump', '-v' ])
+		cmds.append([ 'clang', '-v' ])
+
 		obj = objbase + 'clang'
 		clang_cc = [ 'clang' ] + hostflags + common['cflags'] + a['cflags'] + [ '-S', '-o', obj + '.s', target ]
 		clang_as = [ a['prefix'] + 'as', '-o', obj + '.o', obj + '.s' ]
