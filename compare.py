@@ -19,23 +19,23 @@ common = {
 archs = [
 		# x86_64
 		{ 'desc' : 'x86_64 generic with sse2',
-		  'prefix' : '',
+		  'prefix' : 'x86_64-unknown-linux-gnu-',
 		  'cflags' : [ '-m64', '-mtune=generic', '-msse2' ],
 		  'objdump-flags' : [ '-M', 'intel-mnemonic' ] },
 
 		{ 'desc' : 'x86_64 generic without sse2',
-		  'prefix' : '',
+		  'prefix' : 'x86_64-unknown-linux-gnu-',
 		  'cflags' : [ '-m64', '-mtune=generic', '-mno-sse2' ],
 		  'objdump-flags' : [ '-M', 'intel-mnemonic' ] },
 
 		# x86
 		{ 'desc' : 'x86 with sse2',
-		  'prefix' : '',
+		  'prefix' : 'x86_64-unknown-linux-gnu-',
 		  'cflags' : [ '-m32', '-mtune=i686', '-msse2' ],
 		  'objdump-flags' : [ '-M', 'intel-mnemonic' ] },
 
 		{ 'desc' : 'x86 without sse2',
-		  'prefix' : '',
+		  'prefix' : 'x86_64-unknown-linux-gnu-',
 		  'cflags' : [ '-m32', '-mtune=i686', '-mno-sse2' ],
 		  'objdump-flags' : [ '-M', 'intel-mnemonic' ] },
 
