@@ -8,42 +8,72 @@
 #include <time.h>
 #endif
 
-void *memcpy_vector(void *__restrict dst, const void *__restrict src, size_t size)
+#define DUFFS_DEVICE_4(x,size) \
+  { \
+  if(size > 0) \
+  { \
+    int __DUFFS_DEVICE_count, __DUFFS_DEVICE_n; \
+    __DUFFS_DEVICE_count = size; \
+    __DUFFS_DEVICE_n = (__DUFFS_DEVICE_count+3) >> 2; \
+    switch (__DUFFS_DEVICE_count & 3) \
+    { \
+    case 0: do { x; \
+    case 3: x; \
+    case 2: x; \
+    case 1: x; \
+      } while (--__DUFFS_DEVICE_n > 0); \
+    } \
+  } \
+  }
+
+#define DUFFS_DEVICE_8(x,size) \
+  { \
+  if(size > 0) \
+  { \
+    int __DUFFS_DEVICE_count, __DUFFS_DEVICE_n; \
+    __DUFFS_DEVICE_count = size; \
+    __DUFFS_DEVICE_n = (__DUFFS_DEVICE_count+7) >> 3; \
+    switch (__DUFFS_DEVICE_count & 7) \
+    { \
+    case 0: do { x; \
+    case 7: x; \
+    case 6: x; \
+    case 5: x; \
+    case 4: x; \
+    case 3: x; \
+    case 2: x; \
+    case 1: x; \
+      } while (--__DUFFS_DEVICE_n > 0); \
+    } \
+  } \
+  }
+
+#ifdef __ARMCC_VERSION
+#include <arm_neon.h>
+typedef uint32x4_t v4;
+#else
+typedef uint32_t v4 __attribute__ ((vector_size(16), aligned(1)));
+#endif
+
+void *memcpy_duff_v4(void *__restrict dst, const void *__restrict src, size_t size)
 {
-	uint64_t *vdst;
-	const uint64_t *vsrc;
+	v4 *vdst;
+	const v4 *vsrc;
 
 	const char *csrc;
 	char *cdst;
 
-	size_t i, j, lim;
+	size_t lim;
 
-	lim = size >> 3;
-	vdst = (uint64_t *)dst;
-	vsrc = (const uint64_t *)src;
-	i = lim / 8;
-	for (j = 0; j < i; j++) {
-		vdst[0] = vsrc[0];
-		vdst[1] = vsrc[1];
-		vdst[2] = vsrc[2];
-		vdst[3] = vsrc[3];
-		vdst[4] = vsrc[4];
-		vdst[5] = vsrc[5];
-		vdst[6] = vsrc[6];
-		vdst[7] = vsrc[7];
-		vdst += 8;
-		vsrc += 8;
-	}
-	i = lim % 8;
-	for (j = 0; j < i; j++)
-		*vdst++ = *vsrc++;
+	lim = size >> 4;
+	vdst = (v4 *)dst;
+	vsrc = (const v4 *)src;
+	DUFFS_DEVICE_4(*vdst++ = *vsrc++, lim);
 
-	lim = size & 7;
+	lim = size & 15;
 	csrc = (const char *)vsrc;
 	cdst = (char *)vdst;
-	i = lim;
-	for (j = 0; j < i; j++)
-		*cdst++ = *csrc++;
+	DUFFS_DEVICE_8(*cdst++ = *csrc++, lim);
 
 	return dst;
 }
@@ -81,20 +111,20 @@ int main(int argc, char **argv)
 #endif
 
 		/* Warm-up. */
-		memcpy_vector(mem1 + 1, mem, mem_size - 1);
+		memcpy_duff_v4(mem1 + 1, mem, mem_size - 1);
 		assert(memcmp(mem1 + 1, mem, mem_size - 1) == 0);
-		memcpy_vector(mem, mem1, mem_size);
+		memcpy_duff_v4(mem, mem1, mem_size);
 		assert(memcmp(mem, mem1, mem_size) == 0);
 	}
 
 	clock_gettime(CLOCK_MONOTONIC, &start);
-	memcpy_vector(mem1, mem, mem_size);
+	memcpy_duff_v4(mem1, mem, mem_size);
 	clock_gettime(CLOCK_MONOTONIC, &finish);
 	best = elapsedTime(&start, &finish);
 	for (i = 0; i < lim; i++) {
 		long t;
 		clock_gettime(CLOCK_MONOTONIC, &start);
-		memcpy_vector(mem1, mem, mem_size);
+		memcpy_duff_v4(mem1, mem, mem_size);
 		clock_gettime(CLOCK_MONOTONIC, &finish);
 		t = elapsedTime(&start, &finish);
 		if (t < best) best = t;

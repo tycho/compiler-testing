@@ -8,24 +8,6 @@
 #include <time.h>
 #endif
 
-#define DUFFS_DEVICE_4(x,size) \
-  { \
-  if(size > 0) \
-  { \
-    int __DUFFS_DEVICE_count, __DUFFS_DEVICE_n; \
-    __DUFFS_DEVICE_count = size; \
-    __DUFFS_DEVICE_n = (__DUFFS_DEVICE_count+3) >> 2; \
-    switch (__DUFFS_DEVICE_count & 3) \
-    { \
-    case 0: do { x; \
-    case 3: x; \
-    case 2: x; \
-    case 1: x; \
-      } while (--__DUFFS_DEVICE_n > 0); \
-    } \
-  } \
-  }
-
 #define DUFFS_DEVICE_8(x,size) \
   { \
   if(size > 0) \
@@ -48,29 +30,22 @@
   } \
   }
 
-#ifdef __ARMCC_VERSION
-#include <arm_neon.h>
-typedef uint32x4_t v4;
-#else
-typedef uint32_t v4 __attribute__ ((vector_size(16), aligned(1)));
-#endif
-
-void *memcpy_vector(void *__restrict dst, const void *__restrict src, size_t size)
+void *memcpy_duff_64(void *__restrict dst, const void *__restrict src, size_t size)
 {
-	v4 *vdst;
-	const v4 *vsrc;
+	uint64_t *vdst;
+	const uint64_t *vsrc;
 
 	const char *csrc;
 	char *cdst;
 
 	size_t lim;
 
-	lim = size >> 4;
-	vdst = (v4 *)dst;
-	vsrc = (const v4 *)src;
-	DUFFS_DEVICE_4(*vdst++ = *vsrc++, lim);
+	lim = size >> 3;
+	vdst = (uint64_t *)dst;
+	vsrc = (const uint64_t *)src;
+	DUFFS_DEVICE_8(*vdst++ = *vsrc++, lim);
 
-	lim = size & 15;
+	lim = size & 7;
 	csrc = (const char *)vsrc;
 	cdst = (char *)vdst;
 	DUFFS_DEVICE_8(*cdst++ = *csrc++, lim);
@@ -111,20 +86,20 @@ int main(int argc, char **argv)
 #endif
 
 		/* Warm-up. */
-		memcpy_vector(mem1 + 1, mem, mem_size - 1);
+		memcpy_duff_64(mem1 + 1, mem, mem_size - 1);
 		assert(memcmp(mem1 + 1, mem, mem_size - 1) == 0);
-		memcpy_vector(mem, mem1, mem_size);
+		memcpy_duff_64(mem, mem1, mem_size);
 		assert(memcmp(mem, mem1, mem_size) == 0);
 	}
 
 	clock_gettime(CLOCK_MONOTONIC, &start);
-	memcpy_vector(mem1, mem, mem_size);
+	memcpy_duff_64(mem1, mem, mem_size);
 	clock_gettime(CLOCK_MONOTONIC, &finish);
 	best = elapsedTime(&start, &finish);
 	for (i = 0; i < lim; i++) {
 		long t;
 		clock_gettime(CLOCK_MONOTONIC, &start);
-		memcpy_vector(mem1, mem, mem_size);
+		memcpy_duff_64(mem1, mem, mem_size);
 		clock_gettime(CLOCK_MONOTONIC, &finish);
 		t = elapsedTime(&start, &finish);
 		if (t < best) best = t;

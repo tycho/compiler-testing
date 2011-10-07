@@ -8,7 +8,7 @@
 #include <time.h>
 #endif
 
-void *memcpy_vector(void *__restrict dst, const void *__restrict src, size_t size)
+void *memcpy_simple(void *__restrict dst, const void *__restrict src, size_t size)
 {
 
 	uint64_t *vdst;
@@ -69,20 +69,20 @@ int main(int argc, char **argv)
 #endif
 
 		/* Warm-up. */
-		memcpy_vector(mem1 + 1, mem, mem_size - 1);
+		memcpy_simple(mem1 + 1, mem, mem_size - 1);
 		assert(memcmp(mem1 + 1, mem, mem_size - 1) == 0);
-		memcpy_vector(mem, mem1, mem_size);
+		memcpy_simple(mem, mem1, mem_size);
 		assert(memcmp(mem, mem1, mem_size) == 0);
 	}
 
 	clock_gettime(CLOCK_MONOTONIC, &start);
-	memcpy_vector(mem1, mem, mem_size);
+	memcpy_simple(mem1, mem, mem_size);
 	clock_gettime(CLOCK_MONOTONIC, &finish);
 	best = elapsedTime(&start, &finish);
 	for (i = 0; i < lim; i++) {
 		long t;
 		clock_gettime(CLOCK_MONOTONIC, &start);
-		memcpy_vector(mem1, mem, mem_size);
+		memcpy_simple(mem1, mem, mem_size);
 		clock_gettime(CLOCK_MONOTONIC, &finish);
 		t = elapsedTime(&start, &finish);
 		if (t < best) best = t;
