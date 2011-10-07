@@ -40,14 +40,6 @@ archs = [
 		  'objdump-flags' : [ '-M', 'intel-mnemonic' ] },
 
 		# ARM
-		{ 'desc' : 'ARMv7 with NEON-fp16, thumb (linaro)',
-		  'prefix' : 'arm-linux-gnueabi-',
-		  'cflags' : [ '-mthumb', '-march=armv7-a', '-mfpu=neon-fp16' ]},
-
-		{ 'desc' : 'ARMv7 with NEON-fp16 (linaro)',
-		  'prefix' : 'arm-linux-gnueabi-',
-		  'cflags' : [ '-marm', '-march=armv7-a', '-mfpu=neon-fp16' ]},
-
 		{ 'desc' : 'ARMv7 with NEON (linaro)',
 		  'prefix' : 'arm-linux-gnueabi-',
 		  'cflags' : [ '-marm', '-march=armv7-a', '-mfpu=neon' ]},
@@ -55,14 +47,6 @@ archs = [
 		{ 'desc' : 'ARMv7 with VFP (linaro)',
 		  'prefix' : 'arm-linux-gnueabi-',
 		  'cflags' : [ '-marm', '-march=armv7-a', '-mfpu=vfp' ]},
-
-		{ 'desc' : 'ARMv7 with NEON-fp16, thumb (upstream GCC)',
-		  'prefix' : 'arm-unknown-linux-gnueabi-',
-		  'cflags' : [ '-mthumb', '-march=armv7-a', '-mfpu=neon-fp16' ]},
-
-		{ 'desc' : 'ARMv7 with NEON-fp16 (upstream GCC)',
-		  'prefix' : 'arm-unknown-linux-gnueabi-',
-		  'cflags' : [ '-marm', '-march=armv7-a', '-mfpu=neon-fp16' ]},
 
 		{ 'desc' : 'ARMv7 with NEON (upstream GCC)',
 		  'prefix' : 'arm-unknown-linux-gnueabi-',
