@@ -69,6 +69,11 @@ archs = [
 		  'prefix' : 'powerpc-unknown-linux-gnu-',
 		  'cflags' : [ '-mcpu=powerpc' ] },
 
+		# Alpha
+		{ 'desc' : 'Alpha',
+		  'prefix' : 'alphaev67-unknown-linux-gnu-',
+		  'cflags' : [] },
+
 		# MIPS
 		{ 'desc' : 'MIPS 64-bit',
 		  'prefix' : 'mipsel-unknown-linux-gnu-',
