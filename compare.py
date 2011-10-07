@@ -76,8 +76,12 @@ archs = [
 
 		# MIPS
 		{ 'desc' : 'MIPS 64-bit',
-		  'prefix' : 'mipsel-unknown-linux-gnu-',
+		  'prefix' : 'mipsel64-unknown-linux-gnu-',
 		  'cflags' : [ '-march=mips64r2', '-mno-abicalls', '-mabi=eabi', '-mfp64', '-mips3d', '-mdmx' ] },
+
+		{ 'desc' : 'MIPS 32-bit',
+		  'prefix' : 'mipsel-unknown-linux-gnu-',
+		  'cflags' : [ '-march=mips32r2', '-mno-abicalls', '-mabi=eabi', '-mfp64', '-mips3d', '-mdmx' ] },
 
 		# SPARC
 		{ 'desc' : 'UltraSPARC T2 32-bit with VIS',
