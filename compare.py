@@ -92,7 +92,6 @@ archs = [
 		  'prefix' : 'sparc-unknown-linux-gnu-',
 		  'cflags' : [ '-mcpu=niagara2', '-mno-vis' ] },
 
-		# SPARC64
 		{ 'desc' : 'UltraSPARC T2 64-bit with VIS',
 		  'prefix' : 'sparc64-unknown-linux-gnu-',
 		  'cflags' : [ '-mcpu=niagara2', '-mvis' ] },
