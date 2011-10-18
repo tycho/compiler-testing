@@ -23,10 +23,10 @@ archs = [
 		  'cflags' : [ '-m64', '-mtune=generic', '-msse2' ],
 		  'objdump-flags' : [ '-M', 'intel-mnemonic' ] },
 
-		{ 'desc' : 'x86_64 generic without sse2',
-		  'prefix' : 'x86_64-unknown-linux-gnu-',
-		  'cflags' : [ '-m64', '-mtune=generic', '-mno-sse2' ],
-		  'objdump-flags' : [ '-M', 'intel-mnemonic' ] },
+		#{ 'desc' : 'x86_64 generic without sse2',
+		#  'prefix' : 'x86_64-unknown-linux-gnu-',
+		#  'cflags' : [ '-m64', '-mtune=generic', '-mno-sse2' ],
+		#  'objdump-flags' : [ '-M', 'intel-mnemonic' ] },
 
 		# x86
 		{ 'desc' : 'x86 with sse2',
@@ -34,19 +34,19 @@ archs = [
 		  'cflags' : [ '-m32', '-mtune=i686', '-msse2' ],
 		  'objdump-flags' : [ '-M', 'intel-mnemonic' ] },
 
-		{ 'desc' : 'x86 without sse2',
-		  'prefix' : 'x86_64-unknown-linux-gnu-',
-		  'cflags' : [ '-m32', '-mtune=i686', '-mno-sse2' ],
-		  'objdump-flags' : [ '-M', 'intel-mnemonic' ] },
+		#{ 'desc' : 'x86 without sse2',
+		#  'prefix' : 'x86_64-unknown-linux-gnu-',
+		#  'cflags' : [ '-m32', '-mtune=i686', '-mno-sse2' ],
+		#  'objdump-flags' : [ '-M', 'intel-mnemonic' ] },
 
 		# ARM
-		{ 'desc' : 'ARMv7 with NEON (linaro)',
-		  'prefix' : 'arm-linux-gnueabi-',
-		  'cflags' : [ '-marm', '-march=armv7-a', '-mfpu=neon' ]},
+		#{ 'desc' : 'ARMv7 with NEON (linaro)',
+		#  'prefix' : 'arm-linux-gnueabi-',
+		#  'cflags' : [ '-marm', '-march=armv7-a', '-mfpu=neon' ]},
 
-		{ 'desc' : 'ARMv7 with VFP (linaro)',
-		  'prefix' : 'arm-linux-gnueabi-',
-		  'cflags' : [ '-marm', '-march=armv7-a', '-mfpu=vfp' ]},
+		#{ 'desc' : 'ARMv7 with VFP (linaro)',
+		#  'prefix' : 'arm-linux-gnueabi-',
+		#  'cflags' : [ '-marm', '-march=armv7-a', '-mfpu=vfp' ]},
 
 		{ 'desc' : 'ARMv7 with NEON (upstream GCC)',
 		  'prefix' : 'arm-unknown-linux-gnueabi-',
@@ -104,10 +104,11 @@ archs = [
 def exec_cmd_chain(l):
 	for cmd in l:
 		try:
-			print ' '.join(cmd)
+			#print ' '.join(cmd)
 			p = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
 			stdout, stderr = p.communicate()
-			print stdout
+			if (len(stdout.strip()) > 1):
+				print stdout
 		except:
 			pass
 
@@ -153,7 +154,7 @@ def main():
 			dump_mix = [ a['prefix'] + 'objdump' ] + dump_flags + [ '-S', obj ]
 			remove_obj = [ 'rm', obj ]
 			cmds.append(dump_asm)
-			cmds.append(dump_mix)
+			#cmds.append(dump_mix)
 			cmds.append(remove_obj)
 
 		try:
