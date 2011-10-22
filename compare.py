@@ -13,7 +13,7 @@ import subprocess
 import sys
 
 common = {
-	'cflags' : [ '-O3', '-ggdb', '-ftree-vectorize', '-ftree-vectorizer-verbose=3', '-ffast-math', '-fomit-frame-pointer', '-fno-strict-aliasing', '-Wall', '-pedantic' ]
+	'cflags' : [ '-Os', '-ggdb', '-ftree-vectorize', '-ftree-vectorizer-verbose=3', '-ffast-math', '-fomit-frame-pointer', '-fno-strict-aliasing', '-Wall', '-pedantic' ]
 	}
 
 archs = [
@@ -55,6 +55,10 @@ archs = [
 		{ 'desc' : 'ARMv7 with VFP (upstream GCC)',
 		  'prefix' : 'arm-unknown-linux-gnueabi-',
 		  'cflags' : [ '-marm', '-march=armv7-a', '-mfpu=vfp' ]},
+
+		{ 'desc' : 'ARMv7 with NEON + Thumb encoding',
+		  'prefix' : 'arm-unknown-linux-gnueabi-',
+		  'cflags' : [ '-mthumb', '-march=armv7-a', '-mfpu=neon' ]},
 
 		# PowerPC
 		{ 'desc' : 'PowerPC 64-bit with AltiVec',
