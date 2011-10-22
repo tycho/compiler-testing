@@ -1,9 +1,9 @@
+#include <stdint.h>
+#ifdef TEST
 #include <assert.h>
 #include <stdio.h>
-#include <stdint.h>
 #include <stdlib.h>
 #include <string.h>
-#ifdef TEST
 #include <sys/time.h>
 #include <time.h>
 #endif
@@ -11,25 +11,29 @@
 void *memcpy_simple(void *__restrict dst, const void *__restrict src, size_t size)
 {
 
-	uint64_t *vdst;
-	const uint64_t *vsrc;
+	uintptr_t *vdst;
+	const uintptr_t *vsrc;
 
 	const char *csrc;
 	char *cdst;
 
 	size_t i, lim;
 
-	lim = size >> 3;
-	vdst = (uint64_t *)dst;
-	vsrc = (const uint64_t *)src;
+	lim = size / sizeof(uintptr_t);
+	vdst = (uintptr_t *)dst;
+	vsrc = (const uintptr_t *)src;
+#ifdef __INTEL_COMPILER
 #pragma ivdep
+#endif
 	for (i = 0; i < lim; i++)
 		*vdst++ = *vsrc++;
 
-	lim = size & 7;
+	lim = size & (sizeof(uintptr_t) - 1);
 	csrc = (const char *)vsrc;
 	cdst = (char *)vdst;
+#ifdef __INTEL_COMPILER
 #pragma ivdep
+#endif
 	for (i = 0; i < lim; i++)
 		*cdst++ = *csrc++;
 

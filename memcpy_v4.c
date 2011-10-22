@@ -1,9 +1,9 @@
+#include <stdint.h>
+#ifdef TEST
 #include <assert.h>
 #include <stdio.h>
-#include <stdint.h>
 #include <stdlib.h>
 #include <string.h>
-#ifdef TEST
 #include <sys/time.h>
 #include <time.h>
 #endif
