@@ -23,42 +23,14 @@ archs = [
 		  'cflags' : [ '-m64', '-mtune=generic', '-msse2' ],
 		  'objdump-flags' : [ '-M', 'intel-mnemonic' ] },
 
-		#{ 'desc' : 'x86_64 generic without sse2',
-		#  'prefix' : 'x86_64-unknown-linux-gnu-',
-		#  'cflags' : [ '-m64', '-mtune=generic', '-mno-sse2' ],
-		#  'objdump-flags' : [ '-M', 'intel-mnemonic' ] },
-
-		# x86
-		{ 'desc' : 'x86 with sse2',
-		  'prefix' : 'x86_64-unknown-linux-gnu-',
-		  'cflags' : [ '-m32', '-mtune=i686', '-msse2' ],
-		  'objdump-flags' : [ '-M', 'intel-mnemonic' ] },
-
-		#{ 'desc' : 'x86 without sse2',
-		#  'prefix' : 'x86_64-unknown-linux-gnu-',
-		#  'cflags' : [ '-m32', '-mtune=i686', '-mno-sse2' ],
-		#  'objdump-flags' : [ '-M', 'intel-mnemonic' ] },
-
 		# ARM
-		#{ 'desc' : 'ARMv7 with NEON (linaro)',
-		#  'prefix' : 'arm-linux-gnueabi-',
-		#  'cflags' : [ '-marm', '-march=armv7-a', '-mfpu=neon' ]},
-
-		#{ 'desc' : 'ARMv7 with VFP (linaro)',
-		#  'prefix' : 'arm-linux-gnueabi-',
-		#  'cflags' : [ '-marm', '-march=armv7-a', '-mfpu=vfp' ]},
-
-		{ 'desc' : 'ARMv7 with NEON (upstream GCC)',
-		  'prefix' : 'arm-unknown-linux-gnueabi-',
+		{ 'desc' : 'ARMv7 with NEON (linaro)',
+		  'prefix' : 'arm-linux-gnueabi-',
 		  'cflags' : [ '-marm', '-march=armv7-a', '-mfpu=neon' ]},
 
-		{ 'desc' : 'ARMv7 with VFP (upstream GCC)',
-		  'prefix' : 'arm-unknown-linux-gnueabi-',
+		{ 'desc' : 'ARMv7 with VFP (linaro)',
+		  'prefix' : 'arm-linux-gnueabi-',
 		  'cflags' : [ '-marm', '-march=armv7-a', '-mfpu=vfp' ]},
-
-		{ 'desc' : 'ARMv7 with NEON + Thumb encoding',
-		  'prefix' : 'arm-unknown-linux-gnueabi-',
-		  'cflags' : [ '-mthumb', '-march=armv7-a', '-mfpu=neon' ]},
 
 		# PowerPC
 		{ 'desc' : 'PowerPC 64-bit with AltiVec',
@@ -69,9 +41,10 @@ archs = [
 		  'prefix' : 'powerpc64-unknown-linux-gnu-',
 		  'cflags' : [ '-mcpu=powerpc64', '-mno-altivec' ] },
 
-		{ 'desc' : 'PowerPC 32-bit',
-		  'prefix' : 'powerpc-unknown-linux-gnu-',
-		  'cflags' : [ '-mcpu=powerpc' ] },
+		# SH4
+		{ 'desc' : 'SH4',
+		  'prefix' : 'sh4-unknown-linux-gnu-',
+		  'cflags' : [ ] },
 
 		# Alpha
 		{ 'desc' : 'Alpha',
