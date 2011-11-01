@@ -66,14 +66,14 @@ int main(int argc, char **argv)
 	size_t i;
 	char *mem, *mem1;
 
-	size_t lim = 25;
+	size_t lim = 5;
 	struct timespec start, finish;
 	long best, *lp;
 
 	mem = (char *)malloc(mem_size);
 	mem1 = (char *)malloc(mem_size);
 
-	for (i = 0; i < lim; i++) {
+	for (i = 0; i < 3; i++) {
 		srandom(time(NULL));
 
 		lp = (long *)mem;
