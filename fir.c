@@ -1,7 +1,7 @@
 #include <string.h>
 
 /* finite impulse response (FIR) filter */
-void filter(float *dst, const float *src, size_t n, const float *kernel) {
+void fir_filter(float *dst, const float *src, size_t n, const float *kernel) {
     const float k0 = kernel[0];
     const float k1 = kernel[1];
     const float k2 = kernel[2];
